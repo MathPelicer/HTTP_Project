@@ -36,9 +36,17 @@ def Server():
 
                 if split_request[0] == "GET":
                     params = split_request[1]
+
+                    # procura arquivo solicitado
+                    # se achar 200 OK
+                    # se nao, 404 not found
+
+                    test = find_files('index.html', PATH)
+                    print(test)
+
                     print("Solicitação do tipo GET, buscando o recurso {}".format(params))
 
-                    response = ("200 OK!").encode()
+                    response = ("200 OK").encode()
                     connectionSocket.send(response)
 
                 elif split_request[0] == "POST":
@@ -47,7 +55,7 @@ def Server():
                     params = split_request[1]
                     print("Solicitação do tipo POST, buscando o recurso {}".format(params))
 
-                    response = ("200 OK!").encode()
+                    response = ("200 OK").encode()
                     connectionSocket.send(response)
 
                 elif split_request[0] == "PUT":
@@ -55,7 +63,7 @@ def Server():
                     params = split_request[1]
                     print("Solicitação do tipo PUT, buscando o recurso {}".format(params))
 
-                    response = ("200 OK!").encode()
+                    response = ("200 OK").encode()
                     connectionSocket.send(response)
 
                 elif split_request[0] == "DELETE":
@@ -63,7 +71,7 @@ def Server():
                     params = split_request[1]
                     print("Solicitação do tipo DELETE, buscando o recurso {}".format(params))
 
-                    response = ("200 OK!").encode()
+                    response = ("200 OK").encode()
                     connectionSocket.send(response)
 
                 else:
