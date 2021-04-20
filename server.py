@@ -47,15 +47,24 @@ def Server():
                     params = split_request[1]
                     print("Solicitação do tipo POST, buscando o recurso {}".format(params))
 
+                    response = ("200 OK!").encode()
+                    connectionSocket.send(response)
+
                 elif split_request[0] == "PUT":
                     print("put code")
                     params = split_request[1]
                     print("Solicitação do tipo PUT, buscando o recurso {}".format(params))
 
+                    response = ("200 OK!").encode()
+                    connectionSocket.send(response)
+
                 elif split_request[0] == "DELETE":
                     print("delete code")
                     params = split_request[1]
                     print("Solicitação do tipo DELETE, buscando o recurso {}".format(params))
+
+                    response = ("200 OK!").encode()
+                    connectionSocket.send(response)
 
                 else:
                     print("Comando não pode ser interpretado por esse servidor!")
