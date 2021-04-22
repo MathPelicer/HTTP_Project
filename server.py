@@ -1,4 +1,5 @@
 from socket import *
+from multiprocessing import Process
 import os
 import sys
 
@@ -15,18 +16,19 @@ def find_files(filename, search_path):
 
 
 def Server():
-    HOST = ''
-    PORT = 9000
+    HOST = '127.0.0.1'
+    PORT = 8081
 
-    server_socket = socket(AF_INET, SOCK_STREAM)
+    serverSocket = socket(AF_INET, SOCK_STREAM)
     orig = (HOST, PORT)
-    server_socket.bind(orig)
-    server_socket.listen(1)
+    serverSocket.bind(orig)
+    serverSocket.listen(1)
 
     try:
-        while(1):
-            (connectionSocket, addr) = server_socket.accept()
-            pid = os.fork()
+        while(19):
+            (connectionSocket, addr) = serverSocket.accept()
+            pid = Process(target=serverSocket, args=(connectionSocket, addr),)
+            pid.start()
 
             if pid == 0:
                 print("Cliente {} conectado ao servidor".format(addr))

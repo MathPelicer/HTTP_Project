@@ -1,10 +1,10 @@
 from socket import *
 
-serverName = "localhost"
+serverName = "127.0.0.1"
 
 #cria socket TCP, porta
 #remota # 12000
-serverPort = 9000
+serverPort = 8081
 clientSocket = socket(AF_INET, SOCK_STREAM)
 
 clientSocket.connect((serverName,serverPort))
