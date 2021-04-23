@@ -16,77 +16,25 @@ def find_files(filename, search_path):
 
 
 def Server():
-    HOST = '127.0.0.1'
-    PORT = 8081
+    HOST = ''
+    PORT = 0
 
     serverSocket = socket(AF_INET, SOCK_STREAM)
-    orig = (HOST, PORT)
-    serverSocket.bind(orig)
-    serverSocket.listen(1)
+    #orig = (HOST, PORT)
+    #serverSocket.bind(orig)
+    serverSocket.bind(('', 8888))
+    serverSocket.listen()
 
     try:
         while(19):
             (connectionSocket, addr) = serverSocket.accept()
-            pid = Process(target=serverSocket, args=(connectionSocket, addr),)
-            pid.start()
+            print(addr)
+            data = connectionSocket.recv(1024)
+            print('Receive message from client: {0}'.format(data.decode()))
 
-            if pid == 0:
-                print("Cliente {} conectado ao servidor".format(addr))
-
-                request = connectionSocket.recv(1024).decode()
-                split_request = request.split()
-
-                if split_request[0] == "GET":
-                    params = split_request[1]
-
-                    # procura arquivo solicitado
-                    # se achar 200 OK
-                    # se nao, 404 not found
-
-                    test = find_files('index.html', PATH)
-                    print(test)
-
-                    print("Solicitação do tipo GET, buscando o recurso {}".format(params))
-
-                    response = ("200 OK").encode()
-                    connectionSocket.send(response)
-
-                elif split_request[0] == "POST":
-                    print("post code")
-
-                    params = split_request[1]
-                    print("Solicitação do tipo POST, buscando o recurso {}".format(params))
-
-                    response = ("200 OK").encode()
-                    connectionSocket.send(response)
-
-                elif split_request[0] == "PUT":
-                    print("put code")
-                    params = split_request[1]
-                    print("Solicitação do tipo PUT, buscando o recurso {}".format(params))
-
-                    response = ("200 OK").encode()
-                    connectionSocket.send(response)
-
-                elif split_request[0] == "DELETE":
-                    print("delete code")
-                    params = split_request[1]
-                    print("Solicitação do tipo DELETE, buscando o recurso {}".format(params))
-
-                    response = ("200 OK").encode()
-                    connectionSocket.send(response)
-
-                else:
-                    print("Comando não pode ser interpretado por esse servidor!")
-
-                    response = ("ERRO! Servidor não reconhece esse comando!").encode()
-                    connectionSocket.send(response)
-                    
-                connectionSocket.close()
-                sys.exit(0)
-            else:
-                connectionSocket.close()
-
+            connectionSocket.send("hello there by server".encode())
+            connectionSocket.close()
+            serverSocket.close
     except KeyboardInterrupt:
         print("\n Shutting down... \n")
     except Exception as exc:

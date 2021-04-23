@@ -1,19 +1,12 @@
-from socket import *
+import socket
 
-serverName = "127.0.0.1"
+s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s.connect(('127.0.0.1',8888))
 
-#cria socket TCP, porta
-#remota # 12000
-serverPort = 8081
-clientSocket = socket(AF_INET, SOCK_STREAM)
 
-clientSocket.connect((serverName,serverPort))
-sentence = input("Digite algo em letra minúscula:")
+s.send(b'Hello')
+data = s.recv(1024)
+print('Receive message from server: {0}'.format(data.decode()))
 
-#Envia a mensagem
-sen = sentence.encode() #formata a mensagem
-clientSocket.send(sen)  #chama encode para mandar 
-modifiedSentence = clientSocket.recv(1024)
 
-print("From Server: ", modifiedSentence.decode())
-clientSocket.close()
+s.close()
