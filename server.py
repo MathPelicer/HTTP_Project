@@ -36,15 +36,13 @@ def Server():
                 split_request = request.split()
 
                 if split_request[0] == "GET":
-                    params = split_request[1]
+                    params = split_request[1].split('/')
 
                     # procura arquivo solicitado
                     # se achar 200 OK
                     # se nao, 404 not found
 
-                    test = find_files(params, PATH)
-                    print(test[0])
-
+                    test = find_files(params[-1], PATH)
                     html_file = open(str(test[0]), 'r')
 
                     data = "HTTP/1.1 200 OK\r\n"
