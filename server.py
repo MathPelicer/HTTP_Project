@@ -1,6 +1,7 @@
 from socket import *
 import os
 import sys
+import codecs
 
 PATH = os.path.abspath(os.getcwd())
 
@@ -41,13 +42,20 @@ def Server():
                     # se achar 200 OK
                     # se nao, 404 not found
 
-                    test = find_files('index.html', PATH)
-                    print(test)
+                    test = find_files(params, PATH)
+                    print(test[0])
+
+                    html_file = open(str(test[0]), 'r')
+
+                    data = "HTTP/1.1 200 OK\r\n"
+                    data += "Content-Type: text/html; charset=utf-8\r\n"
+                    data += "\r\n"
+                    data += html_file.read()
 
                     print("Solicitação do tipo GET, buscando o recurso {}".format(params))
 
-                    response = ("200 OK").encode()
-                    connectionSocket.send(response)
+                    #response = ("200 OK").encode()
+                    connectionSocket.sendall(data.encode())
 
                 elif split_request[0] == "POST":
                     print("post code")
