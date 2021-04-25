@@ -36,24 +36,32 @@ def Server():
                 split_request = request.split()
 
                 if split_request[0] == "GET":
-                    params = split_request[1].split('/')
+                    params = split_request[1]
+                    params = params[1:]
 
-                    # procura arquivo solicitado
-                    # se achar 200 OK
-                    # se nao, 404 not found
+                    print(params)
 
-                    test = find_files(params[-1], PATH)
-                    html_file = open(str(test[0]), 'r')
+                    test = find_files(params, PATH)
+                    print(test)
 
-                    data = "HTTP/1.1 200 OK\r\n"
-                    data += "Content-Type: text/html; charset=utf-8\r\n"
-                    data += "\r\n"
-                    data += html_file.read()
+                    if test != []:
+                        html_file = open(str(test[0]), 'r')
 
-                    print("Solicitação do tipo GET, buscando o recurso {}".format(params))
+                        data = "HTTP/1.1 200 OK\r\n"
+                        data += "Content-Type: text/html; charset=utf-8\r\n"
+                        data += "\r\n"
+                        data += html_file.read()
 
-                    #response = ("200 OK").encode()
-                    connectionSocket.sendall(data.encode())
+                        print("Solicitação do tipo GET, buscando o recurso {}".format(params))
+
+                        connectionSocket.sendall(data.encode())
+
+                    else:
+                        data = "HTTP/1.1 404 NOT FOUND\r\n"
+                        data += "Content-Type: text/html; charset=utf-8\r\n"
+                        data += "\r\n"
+                        data += "<html><head></head><body><h1>404 Not Found</h1></body></html>"
+                        connectionSocket.sendall(data.encode())        
 
                 elif split_request[0] == "POST":
                     print("post code")
