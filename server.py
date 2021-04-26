@@ -40,7 +40,7 @@ def Server():
                     params = split_request[1]
 
                     file_path = PATH + params
-                    
+
                     try:
                         html_file = open(file_path, 'r')
 
@@ -52,6 +52,7 @@ def Server():
                         print("Solicitação do tipo GET, buscando o recurso {}".format(params))
 
                         connectionSocket.sendall(data.encode())
+                        
                     except:
                         data = "HTTP/1.1 404 NOT FOUND\r\n"
                         data += "Content-Type: text/html; charset=utf-8\r\n"
