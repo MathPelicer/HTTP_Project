@@ -100,9 +100,12 @@ def Server():
 
                 else:
                     print("Comando não pode ser interpretado por esse servidor!")
-
-                    response = ("ERRO! Servidor não reconhece esse comando!").encode()
-                    connectionSocket.send(response)
+                    data = "HTTP/1.1 400 Bad Request\r\n"
+                    data += "Content-Type: text/html; charset=utf-8\r\n"
+                    data += "\r\n"
+                    data += "<html><head></head><body><h1>400 Bad Request</h1></body></html>"
+                    connectionSocket.sendall(data.encode()) 
+                    connectionSocket.close()
                     
                 connectionSocket.close()
                 sys.exit(0)
