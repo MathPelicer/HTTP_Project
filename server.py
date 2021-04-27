@@ -34,7 +34,9 @@ def Server():
                 print("Cliente {} conectado ao servidor".format(addr))
 
                 request = connectionSocket.recv(1024).decode()
+                print(f"Request -> {request}")
                 split_request = request.split()
+                print(f"Splited Request -> {split_request}")
 
                 if split_request[0] == "GET":
                     params = split_request[1]
@@ -60,11 +62,22 @@ def Server():
                         data += "<html><head></head><body><h1>404 Not Found</h1></body></html>"
                         connectionSocket.sendall(data.encode())    
 
+                    # 403 
+                    # 301 - movido
+
                 elif split_request[0] == "POST":
                     print("post code")
 
-                    params = split_request[1]
-                    print("Solicitação do tipo POST, buscando o recurso {}".format(params))
+                    # the vars sent by the POST request are on the last position
+                    # of the split_request and if more than just a single variable
+                    # they're sapareted by '&'
+                    vars_list = split_request[-1]
+
+                    if "&" in vars_list:
+                        vars_list = vars_list.split('&')
+
+                    print("====== POST REQUEST =====\n")
+                    print(f"Recieved variables -> {vars_list}")
 
                     response = ("200 OK").encode()
                     connectionSocket.send(response)
