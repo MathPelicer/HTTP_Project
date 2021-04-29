@@ -2,9 +2,45 @@ from socket import *
 import os
 import sys
 import codecs
+import glob
 
 PATH = os.path.abspath(os.getcwd())
+path_list_file = PATH + "/archive_files.txt"
+
 print(PATH)
+
+archive_path_list = []
+
+def getListOfFiles(dirName):
+    # create a list of file and sub directories 
+    # names in the given directory 
+    listOfFile = os.listdir(dirName)
+    allFiles = list()
+    # Iterate over all the entries
+    for entry in listOfFile:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory 
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + getListOfFiles(fullPath)
+        else:
+            if not ".git" in fullPath and PATH in fullPath:
+                fullPath = fullPath.replace(PATH, "")
+                allFiles.append(fullPath)
+                
+    return allFiles
+
+def get_archive_path_list(path_list_file):
+    path_list_file = open(path_list_file, mode="r+")
+
+
+
+    contents = path_list_file.readlines()
+
+    for file_name in contents:
+        file_name = file_name.replace("\n", "")
+        if file_name != "":
+            archive_path_list.append(file_name)
 
 def find_files(filename, search_path):
     result = []
@@ -12,11 +48,21 @@ def find_files(filename, search_path):
     # Wlaking top-down from the root
     for root, dir, files in os.walk(search_path):
         if filename in files:
-            result.append(os.path.join(root, filename))
+            # gets the full path of the file found
+            result_path = os.path.join(root, filename)
+
+            if PATH in result_path:
+                # cleans the path trimming it to be relative to the project folder
+                filepath = result_path.replace(PATH, "")
+                result.append(filepath)
+
     return result
 
-
 def Server():
+    archive_path_list = getListOfFiles(PATH)
+    #get_archive_path_list(path_list_file)
+    print(f"LIST OF PATHS => {archive_path_list}")
+
     HOST = ''
     PORT = 9000
 
@@ -41,6 +87,10 @@ def Server():
                 if split_request[0] == "GET":
                     params = split_request[1]
 
+                    is_file_moved = False
+                    if params in archive_path_list:
+                        is_file_moved = True
+
                     file_path = PATH + params
 
                     try:
@@ -56,11 +106,20 @@ def Server():
                         connectionSocket.sendall(data.encode())
                         
                     except:
-                        data = "HTTP/1.1 404 NOT FOUND\r\n"
-                        data += "Content-Type: text/html; charset=utf-8\r\n"
-                        data += "\r\n"
-                        data += "<html><head></head><body><h1>404 Not Found</h1></body></html>"
-                        connectionSocket.sendall(data.encode())    
+                        
+                        if is_file_moved == True:
+                            print("PARMS INSIDE")
+                            data = "HTTP/1.1 301 FILE MOVED\r\n"
+                            data += "Content-Type: text/html; charset=utf-8\r\n"
+                            data += "\r\n"
+                            data += "<html><head></head><body><h1>301 File moved</h1></body></html>"
+                            connectionSocket.sendall(data.encode()) 
+                        else:
+                            data = "HTTP/1.1 404 NOT FOUND\r\n"
+                            data += "Content-Type: text/html; charset=utf-8\r\n"
+                            data += "\r\n"
+                            data += "<html><head></head><body><h1>404 Not Found</h1></body></html>"
+                            connectionSocket.sendall(data.encode())    
 
                     # 403 
                     # 301 - movido
