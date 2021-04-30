@@ -33,8 +33,6 @@ def getListOfFiles(dirName):
 def get_archive_path_list(path_list_file):
     path_list_file = open(path_list_file, mode="r+")
 
-
-
     contents = path_list_file.readlines()
 
     for file_name in contents:
@@ -138,8 +136,18 @@ def Server():
                     print("====== POST REQUEST =====\n")
                     print(f"Recieved variables -> {vars_list}")
 
-                    response = ("200 OK").encode()
-                    connectionSocket.send(response)
+                    post_vars_dict = {}
+
+                    for var in vars_list:
+                        name_and_value = var.split('=')
+                        post_vars_dict[name_and_value[0]] = name_and_value[1]
+
+                    print(post_vars_dict)
+                    data = "HTTP/1.1 200 OK\r\n"
+                    data += "Content-Type: text/html; charset=utf-8\r\n"
+                    data += "\r\n"
+                    data += f"<html><head></head><body><h1>Dados capturados: {post_vars_dict['fname']} & {post_vars_dict['lname']}</h1></body></html>"
+                    connectionSocket.sendall(data.encode()) 
 
                 elif split_request[0] == "PUT":
                     print("put code")
