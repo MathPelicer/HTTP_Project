@@ -119,11 +119,7 @@ def Server():
                             data += "<html><head></head><body><h1>404 Not Found</h1></body></html>"
                             connectionSocket.sendall(data.encode())    
 
-                    # 403 
-
-
                 elif split_request[0] == "POST":
-                    print("post code")
 
                     # the vars sent by the POST request are on the last position
                     # of the split_request and if more than just a single variable
@@ -142,7 +138,6 @@ def Server():
                         name_and_value = var.split('=')
                         post_vars_dict[name_and_value[0]] = name_and_value[1]
 
-                    print(post_vars_dict)
                     data = "HTTP/1.1 200 OK\r\n"
                     data += "Content-Type: text/html; charset=utf-8\r\n"
                     data += "\r\n"
@@ -168,7 +163,6 @@ def Server():
 
 
                 elif split_request[0] == "DELETE":
-                    print("delete code")
                     params = split_request[1]
 
                     full_path = PATH + params
@@ -183,8 +177,6 @@ def Server():
                         connectionSocket.sendall(data.encode()) 
                     else:
                         print("This path do not exist.")
-
-                    print("Solicitação do tipo DELETE, buscando o recurso {}".format(params))
 
                 else:
                     print("Comando não pode ser interpretado por esse servidor!")
