@@ -120,7 +120,7 @@ def Server():
                             connectionSocket.sendall(data.encode())    
 
                     # 403 
-                    # 301 - movido
+
 
                 elif split_request[0] == "POST":
                     print("post code")
@@ -150,12 +150,22 @@ def Server():
                     connectionSocket.sendall(data.encode()) 
 
                 elif split_request[0] == "PUT":
-                    print("put code")
                     params = split_request[1]
-                    print("Solicitação do tipo PUT, buscando o recurso {}".format(params))
 
-                    response = ("200 OK").encode()
-                    connectionSocket.send(response)
+                    full_path = PATH + params
+
+                    if os.path.exists(full_path):
+                        
+                        archive_path_list.append(params)
+
+                        data = "HTTP/1.1 201 CREATED\r\n"
+                        data += "Content-Type: text/html; charset=utf-8\r\n"
+                        data += "\r\n"
+                        data += "<html><head></head><body><h1>201 CREATED</h1></body></html>"
+                        connectionSocket.sendall(data.encode()) 
+                    else:
+                        print("This path do not exist.")
+
 
                 elif split_request[0] == "DELETE":
                     print("delete code")
