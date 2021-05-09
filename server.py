@@ -78,9 +78,7 @@ def Server():
                 print("Cliente {} conectado ao servidor".format(addr))
 
                 request = connectionSocket.recv(1024).decode()
-                print(f"Request -> {request}")
                 split_request = request.split()
-                print(f"Splited Request -> {split_request}")
 
                 if split_request[0] == "GET":
                     params = split_request[1]
@@ -98,8 +96,6 @@ def Server():
                         data += "Content-Type: text/html; charset=utf-8\r\n"
                         data += "\r\n"
                         data += html_file.read()
-
-                        print("Solicitação do tipo GET, buscando o recurso {}".format(params))
 
                         connectionSocket.sendall(data.encode())
                         
@@ -129,9 +125,6 @@ def Server():
                     if "&" in vars_list:
                         vars_list = vars_list.split('&')
 
-                    print("====== POST REQUEST =====\n")
-                    print(f"Recieved variables -> {vars_list}")
-
                     post_vars_dict = {}
 
                     for var in vars_list:
@@ -150,7 +143,7 @@ def Server():
                     full_path = PATH + params
 
                     if os.path.exists(full_path):
-                        
+
                         archive_path_list.append(params)
 
                         data = "HTTP/1.1 201 CREATED\r\n"
@@ -159,8 +152,11 @@ def Server():
                         data += "<html><head></head><body><h1>201 CREATED</h1></body></html>"
                         connectionSocket.sendall(data.encode()) 
                     else:
-                        print("This path do not exist.")
-
+                        data = "HTTP/1.1 404 NOT FOUND\r\n"
+                        data += "Content-Type: text/html; charset=utf-8\r\n"
+                        data += "\r\n"
+                        data += "<html><head></head><body><h1>404 Not Found</h1></body></html>"
+                        connectionSocket.sendall(data.encode()) 
 
                 elif split_request[0] == "DELETE":
                     params = split_request[1]
@@ -176,7 +172,11 @@ def Server():
                         data += "<html><head></head><body><h1>File Removed</h1></body></html>"
                         connectionSocket.sendall(data.encode()) 
                     else:
-                        print("This path do not exist.")
+                        data = "HTTP/1.1 404 NOT FOUND\r\n"
+                        data += "Content-Type: text/html; charset=utf-8\r\n"
+                        data += "\r\n"
+                        data += "<html><head></head><body><h1>404 Not Found</h1></body></html>"
+                        connectionSocket.sendall(data.encode()) 
 
                 else:
                     print("Comando não pode ser interpretado por esse servidor!")
